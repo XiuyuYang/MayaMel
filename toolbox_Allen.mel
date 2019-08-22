@@ -10,7 +10,7 @@ global proc mainWindow(){
 }
 
 proc topframe(){
-    frameLayout -borderVisible true -height 84 -label "TriCount: 2081/2327[89%]";
+    frameLayout -borderVisible true -height 84 ;
         gridLayout -numberOfRows 1 -numberOfColumns 4 -cellWidthHeight 40 60;
             iconTextRadioCollection lods;
                 iconTextRadioButton -st "iconAndTextVertical" -select
