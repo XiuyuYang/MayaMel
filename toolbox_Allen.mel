@@ -1,0 +1,246 @@
+global proc mainWindow(){
+    if (`window -ex Toolbox`) {deleteUI Toolbox;}
+    window -toolbox true -t "Allen's ToolBox" Toolbox;
+    window -e -w 160 -h 710 Toolbox;
+    columnLayout -adjustableColumn true;
+        topframe;
+        cmds;
+    showWindow Toolbox;
+        
+}
+
+proc topframe(){
+    frameLayout -borderVisible true -height 84 -label "TriCount: 2081/2327[89%]";
+        gridLayout -numberOfRows 1 -numberOfColumns 4 -cellWidthHeight 40 60;
+            iconTextRadioCollection lods;
+                iconTextRadioButton -st "iconAndTextVertical" -select
+                           -i "/Users/Allen/Documents/maya/projects/default/scripts/img/Lod0.png" -l "Lod0";
+                iconTextRadioButton -st "iconAndTextVertical"
+                           -i "/Users/Allen/Documents/maya/projects/default/scripts/img/Lod1.png" -l "Lod1";
+                iconTextRadioButton -st "iconAndTextVertical"
+                           -i "/Users/Allen/Documents/maya/projects/default/scripts/img/Lod2.png" -l "Lod2";
+                iconTextRadioButton -st "iconAndTextVertical"
+                           -i "/Users/Allen/Documents/maya/projects/default/scripts/img/Lod3.png" -l "Lod3";
+        setParent ..;
+        setParent ..;
+        columnLayout -adjustableColumn true;
+            floatSliderGrp -width 100 -adjustableColumn3 1 -value 60.0
+                        -columnWidth3 5 38 30 -label "Lod %" -field true;
+        separator;
+}
+
+proc cmds(){
+    frameLayout -label "Display" 
+            -bv 1 -mw 2 -mh 2 
+            -collapse false -collapsable true;
+        gridLayout -columnsResizable true -numberOfColumns 2 -cellWidthHeight 80 20;
+            button -w 100 -h 18 -label "CenterView" -command "centerToView()";
+            button -w 100 -h 18 -label "ToggleGrid" -command "ToggleGrid";
+            button -w 100 -h 18 -label "WireFrame" -command "toggleWOS()";
+            button -w 100 -h 18 -label "XRay" -command "toggleXRay()";
+            button -w 100 -h 18 -label "Locators" -command "toggleLocators()";
+            text -w 800 -label "BackFace" -recomputeSize true;
+                popupMenu;
+                    menuItem -label "BackFaceCulling On" -c "polyOptions -fb";
+                    menuItem -label "BackFaceCulling Off" -c "polyOptions -bc";
+            text -w 100 -label "MiscDisplay";
+                popupMenu;
+                    menuItem -label "Vertices" -command "polyOptions -r -dv false";
+                    menuItem -label "NurbsCVs" -command "ToggleCVs";
+                    menuItem -label "TextureBorders" -command "polyOptions -r -dmb false";
+                    menuItem -label "NonPlanarFaces" -command "polyOptions -r -dw false";
+                    menuItem -label "FaceCenters" -command "TogglePolygonFaceCenters;";
+                    menuItem -label "LatticePoints" -command "ToggleLatticePoints;";
+            
+            text -w 100 -label "Show/Hide";
+                popupMenu;
+                    menuItem -label "ToggleVisibility" -command "toggleVIS()";
+                    menuItem -label "ShowSelection" -command "ShowSelectedObjects";
+                    menuItem -label "HideSelection" -command "HideSelectedObjects";
+                    menuItem -label "ShowLastHidden" -command "ShowLastHidden";
+                    menuItem -label "HideUnselected" -command "HideUnselectedObjects";
+        setParent ..;
+        setParent ..;
+        
+            
+    frameLayout -label "Shading" 
+            -bv 1 -mw 2 -mh 2 
+            -collapse false -collapsable true;
+        gridLayout -columnsResizable true -numberOfColumns 2 -cellWidthHeight 80 20;
+            button -w 100 -h 18 -label "Wireframe" -command "shading 0";
+            button -w 100 -h 18 -label "Smooth" -command "shading 1";
+            button -w 100 -h 18 -label "Textures" -command "shading 2";
+            button -w 100 -h 18 -label "VertexColors" -command "shading 3";
+            button -w 100 -h 18 -label "VtxCol/Txt" -command "shading 4";
+            button -w 100 -h 18 -label "Vtx/Txt/Lits" -command "shading 5";
+            button -w 100 -h 18 -label "NoLights" -command "shading 6";
+            button -w 100 -h 18 -label "DefaultLights" -command "shading 7";
+            button -w 100 -h 18 -label "ActiveLights" -command "shading 8";
+            button -w 100 -h 18 -label "AllLights" -command "shading 9";
+            setParent ..;
+            setParent ..;
+            
+            
+    frameLayout -label "Normals" 
+            -bv 1 -mw 2 -mh 2 
+            -collapse false -collapsable true;
+        gridLayout -columnsResizable true -numberOfColumns 2 -cellWidthHeight 80 20;
+            button -w 100 -h 18 -label "FaceNormals" -command "polyOptions -r -dn false -f";
+                popupMenu;
+                    menuItem -label "Short Normals" -c "setNormalsSize .16";
+                    menuItem -label "Medium Normals" -c "setNormalsSize .4";
+                    menuItem -label "Long Normals" -c "setNormalsSize 1";
+            
+            button -w 100 -h 18 -label "VtxNormals" -command "polyOptions -r -dn false -pt";
+                popupMenu;
+                    menuItem -label "Short Normals" -c "setNormalsSize .16";
+                    menuItem -label "Medium Normals" -c "setNormalsSize .4";
+                    menuItem -label "Long Normals" -c "setNormalsSize 1";
+            
+            button -w 100 -h 18 -label "Reverse" -command "polyNormal -normalMode 3 -ch 1";
+            button -w 100 -h 18 -label "Average" -command "performPolyAverageNormal 0";
+                popupMenu;
+                    menuItem -label "AverageNormals Options" -command "performPolyAverageNormal 1";
+                    
+            button -w 100 -h 18 -label "Unlock" -command "polyNormalPerVertex -ufn true";
+            setParent ..;
+            setParent ..;
+        
+    frameLayout -label "Edges" 
+            -bv 1 -mw 2 -mh 2 
+            -collapse false -collapsable true;
+        gridLayout -columnsResizable true -numberOfColumns 3 -cellWidthHeight 50 20;
+            button -w 100 -h 18 -label "Hard" -command "polySoftEdge -a 0 -ch 1";
+            button -w 100 -h 18 -label "Soft" -command "polySoftEdge -a 180 -ch 1";
+            text -w 100 -label "Options";
+                popupMenu;
+                    menuItem -label "DisplayAllEdges" -command "polyOptions -ae";
+                    menuItem -label "DisplayHardEdges" -command "polyOptions -he";
+                    menuItem -label "DisplaySoftEdges" -command "polyOptions -se";
+            setParent ..;
+            setParent ..;
+            
+    frameLayout -label "UV maping" 
+            -bv 1 -mw 1 -mh 1 
+            -collapse false -collapsable true;
+        columnLayout -adjustableColumn true;
+            iconTextButton -label "Open UV Editor" -style "iconAndTextHorizontal" -image "textureEditor.png" -command TextureViewWindow;
+            gridLayout -columnsResizable true -numberOfColumns 5 -cellWidthHeight 20 20;
+            iconTextButton -style "iconOnly" -image "polyAutoProj.png" -command CreatePolygonCube;
+            iconTextButton -style "iconOnly" -image "polyBestPlanProj.png" -command BestPlaneTexturingTool;
+            iconTextButton -style "iconOnly" -image "polyCameraProj.png" -command UVCameraBasedProjection;
+            iconTextButton -style "iconOnly" -image "polyContourProj.png" -command UVContourStretchProjection;
+            iconTextButton -style "iconOnly" -image "polyNormalProj.png" -command UVNormalBasedProjection;
+            iconTextButton -style "iconOnly" -image "polyCylProj.png" -command UVCylindricProjection;
+            iconTextButton -style "iconOnly" -image "polyPlanProj.png" -command UVPlanarProjection;
+            iconTextButton -style "iconOnly" -image "polySphereProj.png" -command UVSphericalProjection;
+            setParent ..;
+        columnLayout -adjustableColumn true;
+            iconTextButton -label "Auto UV Unwrap" -style "iconAndTextHorizontal" -image "UVTBWireFrame.png" -command autoUV;
+            iconTextButton -label "Auto 2U for UE4" -style "iconAndTextHorizontal" -image "UVEditorImageRatio.png" -command auto2U;
+            setParent ..;
+            setParent ..;
+            setParent ..;
+    
+    frameLayout -label "Bridges" 
+            -bv 1 -mw 1 -mh 1 
+            -collapse false -collapsable true;
+        columnLayout -adjustableColumn true;
+            iconTextButton -label "Send Selection to Painter" -style "iconAndTextHorizontal" -image "/Users/Allen/Documents/maya/projects/default/scripts/img/painter.png" -command toPainter;
+            iconTextButton -label "Send Selection to Unreal" -style "iconAndTextHorizontal" -image "/Users/Allen/Documents/maya/projects/default/scripts/img/UE4.png" -command toUnreal;
+            iconTextButton -label "Send Selection to Zbrush" -style "iconAndTextHorizontal" -image "/Users/Allen/Documents/maya/projects/default/scripts/img/ZB.png" -command toZB;
+            setParent ..;
+            setParent ..;
+            setParent ..;
+    text -enable false -label "------Allen's ToolBox------";
+}
+
+global proc centerToView ()
+{
+
+string $selection[] = `ls -sl`;
+string $item;
+
+if ( size ($selection) == 0 )
+	{
+	confirmDialog -t "Oops..." -m "Nothing is selected." -b Continue;
+	return;
+	}
+
+	for ($item in $selection)
+	{
+	float $position[] = `autoPlace`;
+    move $position[0] $position[1] $position[2] $item;
+	}
+}
+
+global proc toggleWOS()
+{
+	string $myWindow = `getPanel -withFocus`;
+	{
+		int $wostoggle = `modelEditor -q -wos $myWindow`;
+		switch ($wostoggle)
+		{
+			case 0: modelEditor -e -wos true $myWindow;
+				break;
+			case 1: modelEditor -e -wos false $myWindow;
+				break;
+			default: break;
+		}
+	}
+}
+
+global proc toggleXRay()
+{
+	string $myWindow = `getPanel -withFocus`;
+	{
+		int $xraytoggle = `modelEditor -q -xray $myWindow`;
+		switch ($xraytoggle)
+		{
+			case 0: modelEditor -e -xray true $myWindow;
+				break;
+			case 1: modelEditor -e -xray false $myWindow;
+				break;
+			default: break;
+		}
+	}
+}
+
+
+global proc toggleLocators()
+{
+	string $myWindow = `getPanel -withFocus`;
+	{
+		int $loctoggle = `modelEditor -q -locators $myWindow`;
+		switch ($loctoggle)
+		{
+			case 0: modelEditor -e -locators true $myWindow;
+				break;
+			case 1: modelEditor -e -locators false $myWindow;
+				break;
+			default: break;
+		}
+	}
+}
+
+
+global proc toggleVIS ()
+{
+	string $selection[] = `ls -sl`;
+	string $item;
+
+	for ($item in $selection)
+	{
+		setAttr ($item + ".visibility") (!`getAttr ($item + ".visibility")`);
+	}
+}
+
+
+global proc autoUV(){}
+global proc auto2U(){}
+global proc toPainter(){}
+global proc toUnreal(){}
+global proc toZB(){}
+
+
+mainWindow;
